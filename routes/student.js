@@ -6,7 +6,7 @@ var router = express.Router();
 
 
 // ----- Studentes / Pagination
-router.get('/all' , controller.allStudents)
+router.get('/all' ,authenticate, controller.allStudents)
 // ----- Add
 router.post('/createStudent', authenticate, controller.addStudent)
 // ----- One Student
