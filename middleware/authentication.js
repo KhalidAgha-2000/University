@@ -11,9 +11,7 @@ const authenticate = (req, res, next) => {
             if (err) {
                 return res.json({ status: 400, message: err.message })
             }
-            else {
-                next()
-            }
+            else { next() }
         })
     }
     else {
