@@ -13,9 +13,6 @@ const studentSchema = new Schema({
     dateOfBirth: {
         type: Date,
         required: true,
-        // trim: true,
-        min: '1990-01-01',
-        max: '2000-01-01'
     },
 
     address: {
@@ -32,14 +29,32 @@ const studentSchema = new Schema({
         type: String,
         required: true,
     },
+    creationDate: {
+        type: Intl,
+        required: false
+    },
 },
     {
         collection: 'students',
         timestamps: true,
-
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true },
     }
 );
 
+
+studentSchema.virtual('creationdate')
+    .get(function () {
+        let date = new Date(this.creationDate)
+        return date.toString()
+    })
+
+
+studentSchema.virtual('dateofbirth')
+    .get(function () {
+        let date = new Date(this.dateOfBirth)
+        return date.toString()
+    })
 
 
 const Model = model('Student', studentSchema);

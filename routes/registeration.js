@@ -8,6 +8,6 @@ router.post('/login', conrtollerLogin.login)
 // ----- Logout
 router.post('/logout', conrtollerLogin.logout)
 // ----- Sigin
-router.post('/signin', conrtollerSignin.post)
+router.post('/signin', conrtollerSignin.signin)
 
 module.exports = router

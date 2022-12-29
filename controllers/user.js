@@ -1,10 +1,7 @@
 const userModel = require('../models/users')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const { singin } = require('../routes/validation')
-
 class Controller {
-
     // -------------- Delete Student
     deleteUser(req, res, next) {
         let { id } = req.params
@@ -39,13 +36,11 @@ class Controller {
                     $set: { password: hashedPassword },
                 },
                     { new: true }
-                );
-                res.status(404).json({ success: true, message: 'Password has been updated', data:updateUser })
+                )
+                res.status(404).clearCookie("Ctoken").json({ success: true, message: 'Password has been updated', data: updateUser })
+
             }
-
         })
-
-
 
 
     }

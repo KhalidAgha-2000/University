@@ -1,26 +1,23 @@
 const studentModel = require('../models/students')
 
-
-
 class Controller {
 
     // ---------- Add Student
-    async addStudent(req, res, next) {
+    async addStudent(req, res) {
         const student = new studentModel({
-
             firstname: req.body.firstname,
             lastname: req.body.lastname,
             address: req.body.address,
             phoneNumber: req.body.phoneNumber,
             countrycode: req.body.countrycode,
-            dateOfBirth: req.body.dateOfBirth,
-
-
+            dateOfBirth: new Date(req.body.dateOfBirth),
+            creationDate: Date.now(),
         })
 
         try {
+            let date = new Date(student.creationDate)
             const saveStudent = await student.save()
-            res.status(200).json({ success: true, message: "New Stundent has been addded! ", users: saveStudent })
+            res.status(200).json({ success: true, message: "New Stundent has been addded! ", users: saveStudent, creationDate: date.toLocaleString() })
         }
         catch (err) {
             res.send({ message: 'Error' })
@@ -29,6 +26,7 @@ class Controller {
 
     //----------------- Get One Student
     getOneStudent(req, res, next) {
+        //----------------- Pass Params {id}
         let { id } = req.params
         studentModel.findOne({ _id: id }, (err, response) => {
             if (err) next(err);
@@ -39,7 +37,6 @@ class Controller {
     // --------------- Update Student
     async updateStudent(req, res, next) {
         let { id } = req.params;
-
         const student = {
             firstname: req.body.firstname,
             lastname: req.body.lastname,
@@ -47,13 +44,19 @@ class Controller {
             phoneNumber: req.body.phoneNumber,
             countrycode: req.body.countrycode,
             dateOfBirth: req.body.dateOfBirth,
+
         }
-        studentModel.updateOne({ _id: id }, {
-            $set: student
-        }, (err, response) => {
-            if (err) return next(err);
-            res.status(200).send({ success: true, message: `Student with ID ${id} has been updated`, data: response });
-        });
+        //----------------- Pass Params {id}
+        studentModel.findOne({ _id: id }, (err, response) => {
+            if (err) return next(err)
+
+            studentModel.updateOne({ _id: id }, {
+                $set: student
+            }, (err, response) => {
+                if (err) return next(err);
+                res.status(200).send({ success: true, message: `Student with ID ${id} has been updated`, data: response });
+            });
+        })
     }
 
     // -------------- Delete Student
@@ -67,11 +70,7 @@ class Controller {
         })
     }
 
-
-
     // -------------- Get All Students with pagination
-
-
     async allStudents(req, res, next) {
         try {
             const { page = 2, limit = 10 } = req.query;
@@ -80,7 +79,7 @@ class Controller {
                 .limit(limit * 1)
                 .skip((page - 1) * limit)
                 .sort({ createdAt: -1 })
-                .exec();
+                .exec()
 
             const count = await studentModel.countDocuments();
             res.status(200).json({

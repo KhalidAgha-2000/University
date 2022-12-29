@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken')
 const { login } = require('../routes/validation')
 
 class Controller {
-    async login(req, res, next) {
+    async login(req, res) {
         //validate before saving 
         const { error } = login(req.body)
         if (error) return res.status(404).json({ success: false, message: error.message })// error.details[0].message 
@@ -28,13 +28,11 @@ class Controller {
         })
     }
 
-    logout(req, res, next) {
-        return res
-            .clearCookie("Ctoken")
+    logout(req, res) {
+        res.clearCookie("Ctoken")
             .status(200)
             .json({ message: "Successfully logged out" });
     }
 }
 
-const controller = new Controller()
-module.exports = controller;
+module.exports = new Controller(); 

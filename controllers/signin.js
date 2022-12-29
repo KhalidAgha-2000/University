@@ -1,6 +1,5 @@
 const bcrypt = require('bcryptjs')
 const userModel = require('../models/users')
-const jwt = require('jsonwebtoken')
 const { singin } = require('../routes/validation')
 
 class Controller {
@@ -13,7 +12,7 @@ class Controller {
 
 
     // Creating an User 
-    async post(req, res) {
+    async signin(req, res) {
         // Validate before saving an User 
         const { error } = singin(req.body);
         if (error) return res.json({ error: error.details[0].message });
@@ -35,7 +34,7 @@ class Controller {
         })
         try {
             const savedUser = await user.save() //This is to save the entered user data once post request is finished 
-            res.status(200).json({ success: true,message:"New User has been addded! ", users: savedUser })
+            res.status(200).json({ success: true, message: "New User has been addded! ", users: savedUser })
         }
         catch (err) {
             res.send({ message: 'Error' })
@@ -43,7 +42,4 @@ class Controller {
     }
 
 }
-
-
-const controller = new Controller(); //Creating an instance from this class 
-module.exports = controller; ts = controller;
+module.exports = new Controller(); 
